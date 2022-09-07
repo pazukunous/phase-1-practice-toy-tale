@@ -30,6 +30,27 @@ document.addEventListener("DOMContentLoaded", () => {
     .then(res => res.json())
   }
 
+  function updateLikes(url, body){
+    return fetch(url,{
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+
+      },
+      body: JSON.stringify({
+        "likes":body
+      }),
+    })
+    .then(res => res.json())
+  }
+
+  function handleUpdateLikes(event, id, currLikes){
+    //console.log(currLikes)
+    updateLikes(`http://localhost:3000/toys/${id}`, currLikes)
+    .catch(e => console.error(e))
+    console.log(event.target.parentElement.querySelector("p").textContent=`${currLikes} likes`);
+  }
+
   function handleForm(e){
     e.preventDefault();
 
@@ -60,7 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
     card.append(h2,img,p,button);
 
-    button.addEventListener('click',()=>p.textContent = `${toyData.likes + 1} likes`);
+    button.addEventListener('click',(e)=>handleUpdateLikes(e, toyData.id, ++toyData.likes))
     document.querySelector('#toy-collection').append(card);
   }
 
